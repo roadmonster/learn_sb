@@ -1,7 +1,7 @@
 package com.lihao.jwt.controller;
 
-import com.lihao.jwt.entity.User;
-import com.lihao.jwt.repository.UserRepository;
+import com.lihao.jwt.entity.ApplicationUser;
+import com.lihao.jwt.repository.ApplicationUserRepository;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,15 +20,15 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     @Autowired
-    private UserRepository applicationUserRepository;
+    private ApplicationUserRepository applicationUserRepository;
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 
     @PostMapping("/sign-up")
-    public void signUp(@RequestBody User user) {
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        applicationUserRepository.save(user);
+    public void signUp(@RequestBody ApplicationUser applicationUser) {
+        applicationUser.setPassword(bCryptPasswordEncoder.encode(applicationUser.getPassword()));
+        applicationUserRepository.save(applicationUser);
     }
 }

@@ -13,7 +13,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @JsonIgnoreProperties({"handler","hibernateLazyInitializer"})
 @Table(name = "T_USER")
-public class User {
+public class ApplicationUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long userId;

@@ -3,10 +3,7 @@ package com.lihao.jwt.security;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.lihao.jwt.entity.User;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.lihao.jwt.entity.ApplicationUser;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,21 +19,20 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 
-import com.lihao.jwt.security.SecurityConstants.*;
 
-
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private AuthenticationManager authenticationManager;
+
+    public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
+        this.authenticationManager = authenticationManager;
+    }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException {
-        User creds = null;
+        ApplicationUser creds = null;
         try {
-            creds = new ObjectMapper().readValue(request.getInputStream(), User.class);
+            creds = new ObjectMapper().readValue(request.getInputStream(), ApplicationUser.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -50,7 +46,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                             Authentication authResult)
             throws IOException, ServletException {
         String token = JWT.create()
-                .withSubject(((User)(authResult.getPrincipal())).getUsername())
+                .withSubject(((ApplicationUser)(authResult.getPrincipal())).getUsername())
                 .withExpiresAt(new Date((System.currentTimeMillis()) + SecurityConstants.VALID_SPAN))
                 .sign(Algorithm.HMAC512(SecurityConstants.SECRET.getBytes()));
         response.addHeader(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + token);
