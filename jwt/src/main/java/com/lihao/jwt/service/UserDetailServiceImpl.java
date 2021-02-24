@@ -16,7 +16,7 @@ import java.util.Collections;
 @AllArgsConstructor
 @NoArgsConstructor
 @Service
-public class UserDetailService implements UserDetailsService {
+public class UserDetailServiceImpl implements UserDetailsService {
 
     @Autowired
     private ApplicationUserRepository applicationUserRepository;

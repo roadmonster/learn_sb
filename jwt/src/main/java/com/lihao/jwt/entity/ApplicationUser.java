@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 
@@ -12,16 +13,20 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonIgnoreProperties({"handler","hibernateLazyInitializer"})
-@Table(name = "T_USER")
+@Table(name = "t_user")
 public class ApplicationUser {
+    @GeneratedValue(strategy= GenerationType.AUTO,generator="native")
+    @GenericGenerator(name = "native",strategy = "native")
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "userid", nullable = false)
     private long userId;
 
-    @Column(name = "USERNAME")
+    @Column(name = "username")
     private String username;
 
-    @Column(name = "PASSWORD")
+    @Column(name = "password")
     private String password;
+
+    ////    @GeneratedValue(strategy = GenerationType.IDENTITY)
 
 }
