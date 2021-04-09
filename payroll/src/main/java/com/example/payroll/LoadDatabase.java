@@ -17,5 +17,6 @@ public class LoadDatabase {
             logger.info("Preloading " + repository.save(new Employee("Jackie Chen", "actor")) );
             logger.info("Preloading " + repository.save(new Employee("Jet Lee", "actor")) );
         };
+
     }
 }

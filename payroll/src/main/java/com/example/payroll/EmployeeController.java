@@ -1,5 +1,6 @@
 package com.example.payroll;
 
+import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,8 +13,8 @@ public class EmployeeController {
         this.repository = repository;
     }
 
-    @GetMapping("/employees/{role}")
-    public List<Employee> getByRole(@PathVariable String role){
+    @GetMapping("/employees/roles")
+    public List<Employee> getByRole(@Param("role") String role){
         return this.repository.findByRole(role);
     }
 
