@@ -1,5 +1,7 @@
 package com.lihao.springredditclone.controller;
 
+import com.lihao.springredditclone.dto.AuthenticationResponse;
+import com.lihao.springredditclone.dto.LoginRequest;
 import com.lihao.springredditclone.dto.RegisterRequest;
 import com.lihao.springredditclone.service.AuthService;
 import lombok.AllArgsConstructor;
@@ -17,6 +19,11 @@ public class AuthController {
     public ResponseEntity signup(@RequestBody RegisterRequest registerRequest){
         authService.signup(registerRequest);
         return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @PostMapping("/login")
+    public AuthenticationResponse login(@RequestBody LoginRequest loginRequest){
+        return authService.login(loginRequest);
     }
 
     @GetMapping("accountVerification/{token}")

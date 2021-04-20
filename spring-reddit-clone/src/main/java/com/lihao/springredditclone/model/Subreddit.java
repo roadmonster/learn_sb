@@ -31,5 +31,5 @@ public class Subreddit {
     private Instant createdDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private User user;
+    private AppUser appUser;
 }

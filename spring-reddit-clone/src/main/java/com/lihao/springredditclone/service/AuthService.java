@@ -2,14 +2,21 @@ package com.lihao.springredditclone.service;
 
 import com.lihao.springredditclone.Repository.UserRepository;
 import com.lihao.springredditclone.Repository.VerficationTokenRepository;
+import com.lihao.springredditclone.dto.AuthenticationResponse;
+import com.lihao.springredditclone.dto.LoginRequest;
 import com.lihao.springredditclone.dto.RegisterRequest;
 import com.lihao.springredditclone.exception.SpringRedditException;
+import com.lihao.springredditclone.model.AppUser;
 import com.lihao.springredditclone.model.NotificationEmail;
-import com.lihao.springredditclone.model.User;
 import com.lihao.springredditclone.model.VerificationToken;
+import com.lihao.springredditclone.security.JwtProvider;
 import com.lihao.springredditclone.util.Constants;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -29,30 +36,32 @@ public class AuthService {
     private final VerficationTokenRepository verificationTokenRepository;
     private final MailContentBuilder mailContentBuilder;
     private final MailService mailService;
+    private final AuthenticationManager authenticationManager;
+    private final JwtProvider jwtProvider;
 
     @Transactional
     public void signup(RegisterRequest registerRequest) {
-        User user = new User();
-        user.setUserName(registerRequest.getUsername());
-        user.setEmail(registerRequest.getEmail());
-        user.setPassword(encodePassword(registerRequest.getPassword()));
-        user.setCreatedTime(Instant.now());
-        user.setEnabled(false);
+        AppUser appUser = new AppUser();
+        appUser.setUserName(registerRequest.getUsername());
+        appUser.setEmail(registerRequest.getEmail());
+        appUser.setPassword(encodePassword(registerRequest.getPassword()));
+        appUser.setCreatedTime(Instant.now());
+        appUser.setEnabled(false);
 
-        userRepository.save(user);
+        userRepository.save(appUser);
 
-        String token = generateVerificationToken(user);
+        String token = generateVerificationToken(appUser);
         String message = mailContentBuilder.build("Thank you for signing up to Spring Reddit, please click on the below url to activate your account : "
                 + Constants.ACTIVATION_EMAIL + "/" + token);
 
-        mailService.sendMail(new NotificationEmail("Please Activate your account", user.getEmail(), message));
+        mailService.sendMail(new NotificationEmail("Please Activate your account", appUser.getEmail(), message));
     }
 
-    private String generateVerificationToken(User user) {
+    private String generateVerificationToken(AppUser appUser) {
         String token = UUID.randomUUID().toString();
         VerificationToken verificationToken = new VerificationToken();
         verificationToken.setToken(token);
-        verificationToken.setUser(user);
+        verificationToken.setAppUser(appUser);
         verificationTokenRepository.save(verificationToken);
         return token;
     }
@@ -69,9 +78,18 @@ public class AuthService {
 
     @Transactional
     void fetchUserAndEnable(VerificationToken verificationToken) {
-        String username = verificationToken.getUser().getUserName();
-        User user = userRepository.findByUserName(username).orElseThrow(() -> new SpringRedditException("User Not Found with id - " + username));
-        user.setEnabled(true);
-        userRepository.save(user);
+        String username = verificationToken.getAppUser().getUserName();
+        AppUser appUser = userRepository.findByUserName(username).orElseThrow(() -> new SpringRedditException("User Not Found with id - " + username));
+        appUser.setEnabled(true);
+        userRepository.save(appUser);
+    }
+
+    public AuthenticationResponse login(LoginRequest loginRequest) {
+        Authentication authenticate = authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(
+                        loginRequest.getUsername(), loginRequest.getPassword()
+                ));
+        SecurityContextHolder.getContext().setAuthentication(authenticate);
+        String token =
     }
 }

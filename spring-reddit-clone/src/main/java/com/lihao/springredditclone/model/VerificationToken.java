@@ -20,7 +20,7 @@ public class VerificationToken {
 
     private String token;
     @OneToOne(fetch = FetchType.LAZY)
-    private User user;
+    private AppUser appUser;
 
     private Instant expirationTime;
 }
