@@ -6,6 +6,7 @@ import com.lihao.springredditclone.dto.AuthenticationResponse;
 import com.lihao.springredditclone.dto.LoginRequest;
 import com.lihao.springredditclone.dto.RegisterRequest;
 import com.lihao.springredditclone.exception.SpringRedditException;
+import com.lihao.springredditclone.exception.UserIdNotFoundException;
 import com.lihao.springredditclone.model.AppUser;
 import com.lihao.springredditclone.model.NotificationEmail;
 import com.lihao.springredditclone.model.VerificationToken;
@@ -19,8 +20,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
@@ -92,6 +93,15 @@ public class AuthService {
         SecurityContextHolder.getContext().setAuthentication(authenticate);
         String token = jwtProvider.generateToken(authenticate);
         return new AuthenticationResponse(token, loginRequest.getUsername());
+    }
+
+    @Transactional(readOnly = true)
+    public AppUser getCurrentUser(){
+        AppUser currUser = (AppUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return this.userRepository.findById(currUser.getUserId())
+                .orElseThrow(()-> new UserIdNotFoundException("User: " + currUser.getUserId()
+                        + " not exist in database"));
+
     }
 
 
