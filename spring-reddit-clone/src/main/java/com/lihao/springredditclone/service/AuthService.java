@@ -1,7 +1,7 @@
 package com.lihao.springredditclone.service;
 
 import com.lihao.springredditclone.Repository.UserRepository;
-import com.lihao.springredditclone.Repository.VerficationTokenRepository;
+import com.lihao.springredditclone.Repository.VerificationTokenRepository;
 import com.lihao.springredditclone.dto.AuthenticationResponse;
 import com.lihao.springredditclone.dto.LoginRequest;
 import com.lihao.springredditclone.dto.RegisterRequest;
@@ -33,7 +33,7 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final VerficationTokenRepository verificationTokenRepository;
+    private final VerificationTokenRepository verificationTokenRepository;
     private final MailContentBuilder mailContentBuilder;
     private final MailService mailService;
     private final AuthenticationManager authenticationManager;
