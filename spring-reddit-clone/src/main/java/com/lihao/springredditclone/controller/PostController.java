@@ -4,6 +4,7 @@ import com.lihao.springredditclone.dto.PostRequest;
 import com.lihao.springredditclone.dto.PostResponse;
 import com.lihao.springredditclone.service.PostService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,16 +14,18 @@ import java.util.List;
 import static org.springframework.http.ResponseEntity.status;
 
 @RestController
-@RequestMapping("/api/posts/")
+@RequestMapping("/api/posts")
 @AllArgsConstructor
+@Slf4j
 public class PostController {
     private final PostService postService;
 
-    @PostMapping
-    public ResponseEntity createPost(
+    @PostMapping("/newPost")
+    public ResponseEntity<Void> createPost(
             @RequestBody PostRequest postRequest){
+        log.info("create post endpoint triggered");
         postService.save(postRequest);
-        return new ResponseEntity("Post created", HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @GetMapping
@@ -46,3 +49,4 @@ public class PostController {
     }
 
 }
+
