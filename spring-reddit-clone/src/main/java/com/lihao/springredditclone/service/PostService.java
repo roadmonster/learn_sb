@@ -59,4 +59,13 @@ public class PostService {
         return this.postRepository.findByAppUser(user).stream().map(postMapper::mapToDto)
                 .collect(Collectors.toList());
     }
+
+    @Transactional(readOnly = true)
+    public List<PostResponse> getPostBySubreddit(Long id){
+        Subreddit subreddit = subredditRepository.findById(id)
+        .orElseThrow(()-> new SubredditNotFoundException("" + id));
+        return this.postRepository.findAllBySubreddit(subreddit)
+                .stream().map(postMapper::mapToDto)
+                .collect(Collectors.toList());
+    }
 }
