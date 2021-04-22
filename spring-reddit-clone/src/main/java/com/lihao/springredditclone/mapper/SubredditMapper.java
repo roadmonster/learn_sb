@@ -13,7 +13,10 @@ import java.util.List;
 public interface SubredditMapper {
 
     @Mapping(target = "numberOfPosts", expression = "java(mapPosts(subreddit.getPosts()))")
-    SubredditDto mypSubredditToDto(Subreddit subreddit);
+    @Mapping(target = "id")
+    @Mapping(target = "communityName")
+    @Mapping(target = "description")
+    SubredditDto mapSubredditToDto(Subreddit subreddit);
 
     default Integer mapPosts(List<Post> numberOfPosts){
         return numberOfPosts.size();
@@ -21,5 +24,7 @@ public interface SubredditMapper {
 
     @InheritInverseConfiguration
     @Mapping(target = "posts", ignore = true)
+    @Mapping(target = "createdDate", expression = "java(java.time.Instant.now())")
+
     Subreddit mapDtoToSubreddit(SubredditDto subredditDto);
 }

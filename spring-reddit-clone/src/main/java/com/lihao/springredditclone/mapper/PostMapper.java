@@ -11,17 +11,18 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface PostMapper {
 
-    @Mapping(target = "createDate", expression = "java(java.time.Instant.now())")
+    @Mapping(target = "createdDate", expression = "java(java.time.Instant.now())")
     @Mapping(target = "subreddit", source = "subreddit")
     @Mapping(target = "appUser", source = "user")
     @Mapping(target = "description", source = "postRequest.description")
     Post map(PostRequest postRequest,
              Subreddit subreddit, AppUser user);
 
-    @Mapping(target = "id", source = "post.postId")
-    @Mapping(target = "postName", source = "post.postName")
+    @Mapping(target = "postId")
+    @Mapping(target = "postName")
     @Mapping(target = "userName", source = "post.appUser.userName")
-    @Mapping(target = "url", source = "post.url")
-    @Mapping(target = "subredditName", source = "subreddit.name")
+    @Mapping(target = "url")
+    @Mapping(target = "communityName", expression = "java(post.getSubreddit().getCommunityName())")
     PostResponse mapToDto(Post post);
+
 }

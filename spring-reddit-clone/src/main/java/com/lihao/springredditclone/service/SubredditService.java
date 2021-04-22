@@ -31,7 +31,7 @@ public class SubredditService {
     public List<SubredditDto> getAll(){
         return subredditRepository.findAll()
                 .stream()
-                .map(subredditMapper::mypSubredditToDto)
+                .map(subredditMapper::mapSubredditToDto)
                 .collect(Collectors.toList());
     }
 
@@ -39,6 +39,6 @@ public class SubredditService {
         Subreddit subreddit = subredditRepository.findById(id)
                 .orElseThrow(() -> new SpringRedditException(
                         "No subreddit found with ID: " + id));
-        return subredditMapper.mypSubredditToDto(subreddit);
+        return subredditMapper.mapSubredditToDto(subreddit);
     }
 }

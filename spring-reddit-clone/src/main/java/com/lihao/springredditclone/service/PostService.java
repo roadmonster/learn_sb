@@ -33,8 +33,8 @@ public class PostService {
 
 
     public void save(PostRequest postRequest) {
-        Subreddit subreddit = subredditRepository.findByCommunityName(postRequest.getSubredditName())
-                .orElseThrow(()->new SubredditNotFoundException(postRequest.getSubredditName()));
+        Subreddit subreddit = subredditRepository.findByCommunityName(postRequest.getCommunityName())
+                .orElseThrow(()->new SubredditNotFoundException(postRequest.getCommunityName()));
         this.postRepository.save(postMapper.map(postRequest, subreddit, this.authService.getCurrentUser()));
 
     }
